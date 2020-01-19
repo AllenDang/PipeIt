@@ -16,7 +16,11 @@ func NewMatchPipe() Pipe {
 }
 
 func (m *MatchPipe) GetName() string {
-	return fmt.Sprintf("Match(%s)", m.matchWith)
+	return "M"
+}
+
+func (m *MatchPipe) GetTip() string {
+	return fmt.Sprintf("Match input string array with regex %s", m.matchWith)
 }
 
 func (m *MatchPipe) GetInputType() DataType {

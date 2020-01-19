@@ -18,7 +18,9 @@ type Parameter struct {
 }
 
 type Pipe interface {
+	// Get information for the pipe including name, bgColor, nameColor and borderColor
 	GetName() string
+	GetTip() string
 	GetInputType() DataType
 	GetOutputType() DataType
 	GetConfigUI(changed func()) g.Layout

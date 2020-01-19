@@ -18,7 +18,11 @@ func NewJoinPipe() Pipe {
 }
 
 func (j *JoinPipe) GetName() string {
-	return fmt.Sprintf("Join(%s)", j.joinWith)
+	return "J"
+}
+
+func (j *JoinPipe) GetTip() string {
+	return fmt.Sprintf("Join string array with %s", j.joinWith)
 }
 
 func (j *JoinPipe) GetInputType() DataType {

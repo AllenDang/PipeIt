@@ -27,8 +27,8 @@ func changed() {
 
 func buildConfigMenu(index int, configUI g.Layout) g.Layout {
 	return g.Layout{
-		g.ContextMenuV(fmt.Sprintf("%d-%s", index, "configMenu"), 0, configUI),
-		g.ContextMenuV(fmt.Sprintf("%d-%s", index, "opMenu"), 1, g.Layout{
+		g.ContextMenuV(fmt.Sprintf("%s##%d", "configMenu", index), 0, configUI),
+		g.ContextMenuV(fmt.Sprintf("%s##%d", "opMenu", index), 1, g.Layout{
 			g.Selectable("Delete", func() {
 				pipeline = append(pipeline[:index], pipeline[index+1:]...)
 				changed()
@@ -48,13 +48,14 @@ func buildPipesMenu() g.Widget {
 	if pipBuilders == nil {
 		widgets = append(widgets, g.Label("No suitable pipe"))
 	} else {
-		for _, pb := range pipBuilders {
+		for i, pb := range pipBuilders {
 			builder := pb.Builder
 			widgets = append(widgets,
-				g.Selectable(pb.Name, func() {
+				g.Selectable(fmt.Sprintf("%s##%d", pb.Name, i), func() {
 					pipeline = append(pipeline, builder())
 					changed()
 				}),
+				g.Tooltip(pb.Tip),
 			)
 		}
 	}
@@ -68,7 +69,8 @@ func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
 		for i, p := range pipes {
 			configUI := p.GetConfigUI(func() { changed() })
 			widgets = append(widgets,
-				g.Button(fmt.Sprintf("%d-%s", i+1, p.GetName()), func() {}),
+				g.Button(fmt.Sprintf(" %s ##%d", p.GetName(), i), func() {}),
+				g.Tooltip(p.GetTip()),
 				buildConfigMenu(i, configUI),
 				g.Label("->"))
 		}
@@ -83,10 +85,8 @@ func loop(w *g.MasterWindow) {
 	g.SingleWindow(w, "pipeit", g.Layout{
 		g.Label("Input - input or paste text below"),
 		g.InputTextMultiline("##input", &input, -1, 200, 0, nil, changed),
-		g.Group(g.Layout{
-			g.Label("Pipeline"),
-			buildPipeLineWidgets(pipeline),
-		}),
+		g.Label("Pipeline"),
+		buildPipeLineWidgets(pipeline),
 		g.Label("Output - output text which is proceed by pipe"),
 		g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
 	})

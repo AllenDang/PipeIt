@@ -18,7 +18,11 @@ func NewSplitPipe() Pipe {
 }
 
 func (s *SplitPipe) GetName() string {
-	return fmt.Sprintf("Split(%s)", s.splitWith)
+	return "S"
+}
+
+func (s *SplitPipe) GetTip() string {
+	return fmt.Sprintf("Split input string by %s", s.splitWith)
 }
 
 func (s *SplitPipe) GetInputType() DataType {
