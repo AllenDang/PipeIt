@@ -18,6 +18,7 @@ func init() {
 	pipeRegistry[DataTypeStringArray] = []*PipeBuilder{
 		&PipeBuilder{"Join", "Join input string array with given separator", NewJoinPipe},
 		&PipeBuilder{"Match", "Match input string array with given regex", NewMatchPipe},
+		&PipeBuilder{"Surround", "Add prefix and suffix to each element of input string array", NewSurroundPipe},
 	}
 }
 
