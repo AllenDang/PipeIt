@@ -27,7 +27,11 @@ func changed() {
 
 func buildConfigMenu(index int, configUI g.Layout) g.Layout {
 	return g.Layout{
-		g.ContextMenuV(fmt.Sprintf("%s##%d", "configMenu", index), 0, configUI),
+		g.Custom(func() {
+			if configUI != nil {
+				g.ContextMenuV(fmt.Sprintf("%s##%d", "configMenu", index), 0, configUI).Build()
+			}
+		}),
 		g.ContextMenuV(fmt.Sprintf("%s##%d", "opMenu", index), 1, g.Layout{
 			g.Selectable("Delete", func() {
 				pipeline = append(pipeline[:index], pipeline[index+1:]...)
@@ -85,7 +89,7 @@ func loop(w *g.MasterWindow) {
 	g.SingleWindow(w, "pipeit", g.Layout{
 		g.Label("Input - input or paste text below"),
 		g.InputTextMultiline("##input", &input, -1, 200, 0, nil, changed),
-		g.Label("Pipeline"),
+		g.Label("Pipeline (left click pipe to config, right click to delete)"),
 		buildPipeLineWidgets(pipeline),
 		g.Label("Output - output text which is proceed by pipe"),
 		g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
@@ -93,6 +97,6 @@ func loop(w *g.MasterWindow) {
 }
 
 func main() {
-	wnd := g.NewMasterWindow("PipeIt", 600, 400, true, nil)
+	wnd := g.NewMasterWindow("PipeIt", 600, 500, true, nil)
 	wnd.Main(loop)
 }

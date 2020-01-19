@@ -41,12 +41,7 @@ func (j *JoinPipe) GetConfigUI(changed func()) g.Layout {
 
 func (j *JoinPipe) Process(data interface{}) interface{} {
 	if strs, ok := data.([]string); ok {
-		result := ""
-		for _, s := range strs {
-			result += fmt.Sprintf("%s%s", s, j.joinWith)
-		}
-
-		return strings.Trim(result, j.joinWith)
+		return strings.Join(strs, j.joinWith)
 	}
 
 	return "Error: Join only accepts string array as input"
