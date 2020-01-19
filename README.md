@@ -6,15 +6,16 @@ PipeIt is a text transformation, conversion, cleansing and extraction tool.
 
 # Features
 
-Split - split text to text array by given separator.
-RegexpSplit - split text to text array by given regexp expression.
-Match - filter text array by regexp.
-Replace - replace each element of a text array.
-Surround - add prefix or suffix to each lement of a text array.
-Join - join text array to single line of text by given separator.
-Line - output text array line by line.
+- Split - split text to text array by given separator.
+- RegexpSplit - split text to text array by given regexp expression.
+- Match - filter text array by regexp.
+- Replace - replace each element of a text array.
+- Surround - add prefix or suffix to each lement of a text array.
+- Join - join text array to single line of text by given separator.
+- Line - output text array line by line.
 
 And more pipes are comming...
+
 (More important, tell me your case will help me to create more pipes which will actually useful.)
 
 # Usage
@@ -34,7 +35,9 @@ And more pipes are comming...
 # The reason for creating it
 
 First of all, to test the GUI framework created by me, [giu](https://github.com/AllenDang/giu), for a real project.
+
 It turns out giu is really useful for this kind of application. It just costs me 6 hours to build it from ground.
 
 And I have this idea for years, to create a text process pipeline, to ease my daily text processing pain.
+
 Hope it could be useful to you as well. :)
