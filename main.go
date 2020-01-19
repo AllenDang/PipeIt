@@ -11,10 +11,18 @@ var (
 	input  string
 	output string
 
+	pipeHint string
+
 	pipeline pipe.Pipeline
 )
 
 func changed() {
+	if len(pipeline) > 0 {
+		pipeHint = "Pipeline (left click pipe to config, right click to delete)"
+	} else {
+		pipeHint = "Pipeline (click + to add a pipe)"
+	}
+
 	output = ""
 
 	var data interface{} = input
@@ -89,14 +97,16 @@ func loop(w *g.MasterWindow) {
 	g.SingleWindow(w, "pipeit", g.Layout{
 		g.Label("Input - input or paste text below"),
 		g.InputTextMultiline("##input", &input, -1, 200, 0, nil, changed),
-		g.Label("Pipeline (left click pipe to config, right click to delete)"),
+		g.Label(pipeHint),
 		buildPipeLineWidgets(pipeline),
-		g.Label("Output - output text which is proceed by pipe"),
+		g.Label("Output - output text which is processed by pipeline"),
 		g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
 	})
 }
 
 func main() {
+	pipeHint = "Pipeline (click + to add a pipe)"
+
 	wnd := g.NewMasterWindow("PipeIt", 600, 500, true, nil)
 	wnd.Main(loop)
 }

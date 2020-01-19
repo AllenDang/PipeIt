@@ -2,6 +2,7 @@ package pipe
 
 import (
 	"fmt"
+	"strings"
 
 	g "github.com/AllenDang/giu"
 )
@@ -36,6 +37,7 @@ func (p *SurroundPipe) GetOutputType() DataType {
 
 func (p *SurroundPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
+		g.Label("Use %d to generate series number"),
 		g.InputTextV("Prefix", 100, &(p.prefix), 0, nil, changed),
 		g.InputTextV("Suffix", 100, &(p.suffix), 0, nil, changed),
 	}
@@ -44,8 +46,10 @@ func (p *SurroundPipe) GetConfigUI(changed func()) g.Layout {
 func (p *SurroundPipe) Process(data interface{}) interface{} {
 	if strs, ok := data.([]string); ok {
 		var result []string
-		for _, s := range strs {
-			result = append(result, fmt.Sprintf("%s%s%s", p.prefix, s, p.suffix))
+		for i, s := range strs {
+			pf := strings.Replace(p.prefix, "%d", fmt.Sprintf("%d", i+1), -1)
+			sf := strings.Replace(p.suffix, "%d", fmt.Sprintf("%d", i+1), -1)
+			result = append(result, fmt.Sprintf("%s%s%s", pf, s, sf))
 		}
 
 		return result
