@@ -3,6 +3,8 @@ package pipe
 import (
 	"fmt"
 	"regexp"
+
+	g "github.com/AllenDang/giu"
 )
 
 type MatchPipe struct {
@@ -25,10 +27,10 @@ func (m *MatchPipe) GetOutputType() DataType {
 	return DataTypeStringArray
 }
 
-func (m *MatchPipe) GetParameters() map[string]*Parameter {
-	params := make(map[string]*Parameter)
-	params["MatchWith"] = &Parameter{Type: DataTypeString, Value: &(m.matchWith)}
-	return params
+func (m *MatchPipe) GetConfigUI(changed func()) g.Layout {
+	return g.Layout{
+		g.InputTextV("Match with", 100, &(m.matchWith), 0, nil, changed),
+	}
 }
 
 func (m *MatchPipe) Process(data interface{}) interface{} {

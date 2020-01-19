@@ -3,6 +3,8 @@ package pipe
 import (
 	"fmt"
 	"strings"
+
+	g "github.com/AllenDang/giu"
 )
 
 type JoinPipe struct {
@@ -27,10 +29,10 @@ func (j *JoinPipe) GetOutputType() DataType {
 	return DataTypeString
 }
 
-func (j *JoinPipe) GetParameters() map[string]*Parameter {
-	params := make(map[string]*Parameter)
-	params["JoinWith"] = &Parameter{Type: DataTypeString, Value: &(j.joinWith)}
-	return params
+func (j *JoinPipe) GetConfigUI(changed func()) g.Layout {
+	return g.Layout{
+		g.InputTextV("Join With", 100, &(j.joinWith), 0, nil, changed),
+	}
 }
 
 func (j *JoinPipe) Process(data interface{}) interface{} {

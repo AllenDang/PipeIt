@@ -3,6 +3,8 @@ package pipe
 import (
 	"fmt"
 	"strings"
+
+	g "github.com/AllenDang/giu"
 )
 
 type SplitPipe struct {
@@ -27,10 +29,10 @@ func (s *SplitPipe) GetOutputType() DataType {
 	return DataTypeStringArray
 }
 
-func (s *SplitPipe) GetParameters() map[string]*Parameter {
-	params := make(map[string]*Parameter)
-	params["SplitWith"] = &Parameter{Type: DataTypeString, Value: &(s.splitWith)}
-	return params
+func (s *SplitPipe) GetConfigUI(changed func()) g.Layout {
+	return g.Layout{
+		g.InputTextV("Split with", 100, &(s.splitWith), 0, nil, changed),
+	}
 }
 
 func (s *SplitPipe) Process(data interface{}) interface{} {

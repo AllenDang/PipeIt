@@ -25,21 +25,9 @@ func changed() {
 	output = fmt.Sprint(data)
 }
 
-func buildConfigMenu(index int, params map[string]*pipe.Parameter) g.Layout {
-	var layout g.Layout
-	for k, v := range params {
-		switch v.Type {
-		case pipe.DataTypeString:
-			str := v.Value.(*string)
-			layout = append(layout, g.InputTextV(k, 100, str, 0, nil, func() {
-				v.Value = str
-				changed()
-			}))
-		}
-	}
-
+func buildConfigMenu(index int, configUI g.Layout) g.Layout {
 	return g.Layout{
-		g.ContextMenuV(fmt.Sprintf("%d-%s", index, "configMenu"), 0, layout),
+		g.ContextMenuV(fmt.Sprintf("%d-%s", index, "configMenu"), 0, configUI),
 		g.ContextMenuV(fmt.Sprintf("%d-%s", index, "opMenu"), 1, g.Layout{
 			g.Selectable("Delete", func() {
 				pipeline = append(pipeline[:index], pipeline[index+1:]...)
@@ -78,9 +66,10 @@ func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
 	var widgets []g.Widget
 	if len(pipes) > 0 {
 		for i, p := range pipes {
+			configUI := p.GetConfigUI(func() { changed() })
 			widgets = append(widgets,
 				g.Button(fmt.Sprintf("%d-%s", i+1, p.GetName()), func() {}),
-				buildConfigMenu(i, p.GetParameters()),
+				buildConfigMenu(i, configUI),
 				g.Label("->"))
 		}
 	}

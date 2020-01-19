@@ -1,5 +1,9 @@
 package pipe
 
+import (
+	g "github.com/AllenDang/giu"
+)
+
 type DataType int
 
 const (
@@ -17,7 +21,7 @@ type Pipe interface {
 	GetName() string
 	GetInputType() DataType
 	GetOutputType() DataType
-	GetParameters() map[string]*Parameter
+	GetConfigUI(changed func()) g.Layout
 	Process(data interface{}) interface{}
 }
 
