@@ -11,6 +11,9 @@ var (
 	input  string
 	output string
 
+	inputHeight float32 = 300
+	delta       float32
+
 	pipeHint string
 
 	pipeline pipe.Pipeline
@@ -94,11 +97,15 @@ func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
 }
 
 func loop(w *g.MasterWindow) {
+	inputHeight += delta
+
 	g.SingleWindow(w, "pipeit", g.Layout{
 		g.Label("Input - input or paste text below"),
-		g.InputTextMultiline("##input", &input, -1, 200, 0, nil, changed),
+		g.InputTextMultiline("##input", &input, -1, inputHeight, 0, nil, changed),
+		g.HSplitter("hsplitter", -1, 8, &delta),
 		g.Label(pipeHint),
 		buildPipeLineWidgets(pipeline),
+		g.Dummy(0, 8),
 		g.Label("Output - output text which is processed by pipeline"),
 		g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
 	})
@@ -107,6 +114,6 @@ func loop(w *g.MasterWindow) {
 func main() {
 	pipeHint = "Pipeline (click + to add a pipe)"
 
-	wnd := g.NewMasterWindow("PipeIt", 600, 500, true, nil)
+	wnd := g.NewMasterWindow("PipeIt", 1024, 768, true, nil)
 	wnd.Main(loop)
 }
