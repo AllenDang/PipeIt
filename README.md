@@ -8,9 +8,11 @@ PipeIt is a text transformation, conversion, cleansing and extraction tool.
 
 - Split - split text to text array by given separator.
 - RegexpSplit - split text to text array by given regexp expression.
+- Fields - Fields splits the string s around each instance of one or more consecutive white space characters.
 - Match - filter text array by regexp.
 - Replace - replace each element of a text array.
 - Surround - add prefix or suffix to each lement of a text array.
+- Trim - Trim returns a slice of the string s with all leading and trailing Unicode code points contained in cutset removed.
 - Join - join text array to single line of text by given separator.
 - Line - output text array line by line.
 
