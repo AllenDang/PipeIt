@@ -1,1 +1,1 @@
-gmdeploy -os=darwin -icon=./icon/pipeline.icns .
+gmdeploy -os=darwin -icon=./resource/pipeline.icns .

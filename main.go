@@ -96,10 +96,10 @@ func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
 	return g.Line(widgets...)
 }
 
-func loop(w *g.MasterWindow) {
+func loop() {
 	inputHeight += delta
 
-	g.SingleWindow(w, "pipeit", g.Layout{
+	g.SingleWindow("pipeit", g.Layout{
 		g.Label("Input - input or paste text below"),
 		g.InputTextMultiline("##input", &input, -1, inputHeight, 0, nil, changed),
 		g.HSplitter("hsplitter", -1, 8, &delta),
