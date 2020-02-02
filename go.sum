@@ -4,6 +4,10 @@ github.com/AllenDang/giu v0.0.0-20200122031227-906eacc53278 h1:KmI2KqXOXJ1m2mNX+
 github.com/AllenDang/giu v0.0.0-20200122031227-906eacc53278/go.mod h1:lu2fKnnr8aTY7/P+mrgpN0IJH3RsI7vT6g5dal2/vr4=
 github.com/AllenDang/giu v0.0.0-20200122111721-4cd00e14fdd7 h1:V3DXzZmZ2DAkhDUBqhDLz+o2p4+AYF3Sws40var2EdI=
 github.com/AllenDang/giu v0.0.0-20200122111721-4cd00e14fdd7/go.mod h1:lu2fKnnr8aTY7/P+mrgpN0IJH3RsI7vT6g5dal2/vr4=
+github.com/AllenDang/giu v0.0.0-20200129033505-284943ddeb03 h1:Ym0xqNaMGuXLfy7mofkfoei2J4+OBMd1SmkNrQ7NEoU=
+github.com/AllenDang/giu v0.0.0-20200129033505-284943ddeb03/go.mod h1:lu2fKnnr8aTY7/P+mrgpN0IJH3RsI7vT6g5dal2/vr4=
+github.com/AllenDang/giu v0.0.0-20200201120104-66dd2cc70895 h1:9AS7d50En2iWDeIBnlkXLFdssWXbPWPEW5fNqkLlrFU=
+github.com/AllenDang/giu v0.0.0-20200201120104-66dd2cc70895/go.mod h1:lu2fKnnr8aTY7/P+mrgpN0IJH3RsI7vT6g5dal2/vr4=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

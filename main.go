@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 
 	"github.com/AllenDang/PipeIt/pipe"
 	g "github.com/AllenDang/giu"
@@ -111,8 +113,24 @@ func loop() {
 	})
 }
 
+func readStdin() {
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return
+	}
+
+	if (stat.Mode() & os.ModeCharDevice) == 0 {
+		// Data is being piped to stdin
+		bytes, _ := ioutil.ReadAll(os.Stdin)
+		input = string(bytes)
+	}
+}
+
 func main() {
 	pipeHint = "Pipeline (click + to add a pipe)"
+
+	// Try to read from stdin if there is anything.
+	readStdin()
 
 	wnd := g.NewMasterWindow("PipeIt", 1024, 768, true, nil)
 	wnd.Main(loop)
