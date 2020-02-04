@@ -10,6 +10,7 @@ const (
 	DataTypeString DataType = iota
 	DataTypeInt
 	DataTypeStringArray
+	DataTypeTable
 )
 
 type Parameter struct {

@@ -16,6 +16,7 @@ func init() {
 		&PipeBuilder{"Split", "Split input string into string array", NewSplitPipe},
 		&PipeBuilder{"RegexpSplit", "Split input string into string array using regexp expression", NewRegexpSplitPipe},
 		&PipeBuilder{"Fields", "Fields splits the string s around each instance of one or more consecutive white space characters", NewFieldsPipe},
+		&PipeBuilder{"Table", "Table parse input string to rows and columns", NewTablePipe},
 	}
 	pipeRegistry[DataTypeStringArray] = []*PipeBuilder{
 		&PipeBuilder{"Join", "Join input string array with given separator", NewJoinPipe},
@@ -24,6 +25,10 @@ func init() {
 		&PipeBuilder{"Replace", "Search and replace for each element of input string array", NewReplacePipe},
 		&PipeBuilder{"Line", "Output input string array line by line", NewLinePipe},
 		&PipeBuilder{"Trim", "Trim returns a slice of the string s with all leading and trailing Unicode code points contained in cutset removed", NewTrimPipe},
+	}
+	pipeRegistry[DataTypeTable] = []*PipeBuilder{
+		&PipeBuilder{"Column2Row", "Shift table's column to row", NewColumn2RowPipe},
+		&PipeBuilder{"FmtRow", "Format row to string", NewFmtRowPipe},
 	}
 }
 
