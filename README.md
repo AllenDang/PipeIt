@@ -20,6 +20,8 @@ And more pipes are comming...
 
 (More important, tell me your case will help me to create more pipes which will actually useful.)
 
+PipeIt also supports to read from Stdin, so you could pipe data using "cat file | PipeIt".
+
 # Usage
 
 ## Extract image links from a html source
