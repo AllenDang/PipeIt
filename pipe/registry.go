@@ -13,8 +13,7 @@ var (
 func init() {
 	pipeRegistry = make(map[DataType][]*PipeBuilder)
 	pipeRegistry[DataTypeString] = []*PipeBuilder{
-		&PipeBuilder{"Split", "Split input string into string array", NewSplitPipe},
-		&PipeBuilder{"RegexpSplit", "Split input string into string array using regexp expression", NewRegexpSplitPipe},
+		&PipeBuilder{"Split", "Split input string into string array using regexp expression", NewRegexpSplitPipe},
 		&PipeBuilder{"Fields", "Fields splits the string s around each instance of one or more consecutive white space characters", NewFieldsPipe},
 		&PipeBuilder{"Table", "Table parse input string to rows and columns", NewTablePipe},
 	}
@@ -35,6 +34,20 @@ func init() {
 func QueryPipes(byType DataType) []*PipeBuilder {
 	if v, ok := pipeRegistry[byType]; ok {
 		return v
+	}
+
+	return nil
+}
+
+func QueryPipesBetween(inType, outType DataType) []*PipeBuilder {
+	if inPipes, ok := pipeRegistry[inType]; ok {
+		var pipes []*PipeBuilder
+		for _, p := range inPipes {
+			if p.Builder().GetOutputType() == outType {
+				pipes = append(pipes, p)
+			}
+		}
+		return pipes
 	}
 
 	return nil

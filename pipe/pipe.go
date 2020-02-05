@@ -8,7 +8,6 @@ type DataType int
 
 const (
 	DataTypeString DataType = iota
-	DataTypeInt
 	DataTypeStringArray
 	DataTypeTable
 )

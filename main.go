@@ -39,6 +39,32 @@ func changed() {
 }
 
 func buildConfigMenu(index int, configUI g.Layout) g.Layout {
+	inType := pipe.DataTypeString
+	outType := pipeline[index].GetInputType()
+
+	if index > 0 {
+		inType = pipeline[index-1].GetOutputType()
+	}
+
+	betweenPipes := pipe.QueryPipesBetween(inType, outType)
+
+	var addBeforeMenuItems g.Layout
+	for i, p := range betweenPipes {
+		builder := p.Builder
+		addBeforeMenuItems = append(addBeforeMenuItems, g.Selectable(fmt.Sprintf("%s##%d-%d", p.Name, index, i), func() {
+			pipeline = append(pipeline[:index], append(pipe.Pipeline{builder()}, pipeline[index:]...)...)
+			changed()
+		}))
+		addBeforeMenuItems = append(addBeforeMenuItems, g.Tooltip(p.Tip))
+	}
+
+	var addBeforeMenu g.Layout
+	if len(addBeforeMenuItems) > 0 {
+		addBeforeMenu = append(addBeforeMenu, g.Menu(fmt.Sprintf("Add before##%d", index), addBeforeMenuItems))
+	} else {
+		addBeforeMenu = append(addBeforeMenu, g.Menu(fmt.Sprintf("Add before##%d", index), g.Layout{g.Label("No suitable pipe")}))
+	}
+
 	return g.Layout{
 		g.Custom(func() {
 			if configUI != nil {
@@ -46,6 +72,7 @@ func buildConfigMenu(index int, configUI g.Layout) g.Layout {
 			}
 		}),
 		g.ContextMenuV(fmt.Sprintf("%s##%d", "opMenu", index), 1, g.Layout{
+			addBeforeMenu,
 			g.Selectable("Delete", func() {
 				pipeline = append(pipeline[:index], pipeline[index+1:]...)
 				changed()

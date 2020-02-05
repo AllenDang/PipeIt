@@ -12,11 +12,13 @@ type RegexpSplitPipe struct {
 }
 
 func NewRegexpSplitPipe() Pipe {
-	return &RegexpSplitPipe{}
+	return &RegexpSplitPipe{
+		splitWith: ",",
+	}
 }
 
 func (r *RegexpSplitPipe) GetName() string {
-	return "ReS"
+	return "S"
 }
 
 func (r *RegexpSplitPipe) GetTip() string {
