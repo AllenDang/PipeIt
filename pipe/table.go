@@ -1,20 +1,25 @@
 package pipe
 
 import (
+	"encoding/gob"
 	"regexp"
 
 	g "github.com/AllenDang/giu"
 )
 
 type TablePipe struct {
-	splitRowWith    string
-	splitColumnWith string
+	SplitRowWith    string
+	SplitColumnWith string
+}
+
+func init() {
+	gob.Register(&TablePipe{})
 }
 
 func NewTablePipe() Pipe {
 	return &TablePipe{
-		splitRowWith:    "\n",
-		splitColumnWith: ",",
+		SplitRowWith:    "\n",
+		SplitColumnWith: ",",
 	}
 }
 
@@ -36,19 +41,19 @@ func (t *TablePipe) GetOutputType() DataType {
 
 func (t *TablePipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Split row with", 100, &(t.splitRowWith), 0, nil, changed),
-		g.InputTextV("Split column with", 100, &(t.splitColumnWith), 0, nil, changed),
+		g.InputTextV("Split row with", 100, &(t.SplitRowWith), 0, nil, changed),
+		g.InputTextV("Split column with", 100, &(t.SplitColumnWith), 0, nil, changed),
 	}
 }
 
 func (t *TablePipe) Process(data interface{}) interface{} {
 	if str, ok := data.(string); ok {
-		re, err := regexp.Compile(t.splitRowWith)
+		re, err := regexp.Compile(t.SplitRowWith)
 		if err != nil {
 			return [][]string{[]string{err.Error()}}
 		}
 
-		ce, err := regexp.Compile(t.splitColumnWith)
+		ce, err := regexp.Compile(t.SplitColumnWith)
 		if err != nil {
 			return [][]string{[]string{err.Error()}}
 		}

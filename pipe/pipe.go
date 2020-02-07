@@ -1,6 +1,10 @@
 package pipe
 
 import (
+	"bytes"
+	"encoding/gob"
+	"io"
+
 	g "github.com/AllenDang/giu"
 )
 
@@ -28,3 +32,25 @@ type Pipe interface {
 }
 
 type Pipeline []Pipe
+
+func EncodePipeline(pl Pipeline) (*bytes.Buffer, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	err := enc.Encode(&pl)
+	if err != nil {
+		return nil, err
+	}
+
+	return &buf, nil
+}
+
+func DecodePipeline(r io.Reader) (*Pipeline, error) {
+	var pl Pipeline
+	dec := gob.NewDecoder(r)
+	err := dec.Decode(&pl)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pl, nil
+}

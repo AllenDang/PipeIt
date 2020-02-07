@@ -1,6 +1,7 @@
 package pipe
 
 import (
+	"encoding/gob"
 	"fmt"
 	"regexp"
 
@@ -8,7 +9,11 @@ import (
 )
 
 type MatchPipe struct {
-	matchWith string
+	MatchWith string
+}
+
+func init() {
+	gob.Register(&MatchPipe{})
 }
 
 func NewMatchPipe() Pipe {
@@ -20,7 +25,7 @@ func (m *MatchPipe) GetName() string {
 }
 
 func (m *MatchPipe) GetTip() string {
-	return fmt.Sprintf("Match input string array with regex %s", m.matchWith)
+	return fmt.Sprintf("Match input string array with regex %s", m.MatchWith)
 }
 
 func (m *MatchPipe) GetInputType() DataType {
@@ -33,7 +38,7 @@ func (m *MatchPipe) GetOutputType() DataType {
 
 func (m *MatchPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Match with", 100, &(m.matchWith), 0, nil, changed),
+		g.InputTextV("Match with", 100, &(m.MatchWith), 0, nil, changed),
 	}
 }
 
@@ -41,7 +46,7 @@ func (m *MatchPipe) Process(data interface{}) interface{} {
 	if strs, ok := data.([]string); ok {
 		var result []string
 		for _, s := range strs {
-			if matched, _ := regexp.MatchString(m.matchWith, s); matched {
+			if matched, _ := regexp.MatchString(m.MatchWith, s); matched {
 				result = append(result, s)
 			}
 		}

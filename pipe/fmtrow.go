@@ -1,6 +1,7 @@
 package pipe
 
 import (
+	"encoding/gob"
 	"fmt"
 	"strings"
 
@@ -8,12 +9,16 @@ import (
 )
 
 type FmtRowPipe struct {
-	fmtStr string
+	FmtStr string
+}
+
+func init() {
+	gob.Register(&FmtRowPipe{})
 }
 
 func NewFmtRowPipe() Pipe {
 	return &FmtRowPipe{
-		fmtStr: "",
+		FmtStr: "",
 	}
 }
 
@@ -35,7 +40,7 @@ func (f *FmtRowPipe) GetOutputType() DataType {
 
 func (f *FmtRowPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Fmt string", 300, &(f.fmtStr), 0, nil, changed),
+		g.InputTextV("Fmt string", 300, &(f.FmtStr), 0, nil, changed),
 	}
 }
 
@@ -48,7 +53,7 @@ func (f *FmtRowPipe) Process(data interface{}) interface{} {
 			for _, c := range r {
 				tempRow = append(tempRow, c)
 			}
-			sb.WriteString(fmt.Sprintf(f.fmtStr+"\n", tempRow...))
+			sb.WriteString(fmt.Sprintf(f.FmtStr+"\n", tempRow...))
 		}
 
 		return sb.String()

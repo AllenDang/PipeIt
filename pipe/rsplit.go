@@ -1,6 +1,7 @@
 package pipe
 
 import (
+	"encoding/gob"
 	"fmt"
 	"regexp"
 
@@ -8,12 +9,16 @@ import (
 )
 
 type RegexpSplitPipe struct {
-	splitWith string
+	SplitWith string
+}
+
+func init() {
+	gob.Register(&RegexpSplitPipe{})
 }
 
 func NewRegexpSplitPipe() Pipe {
 	return &RegexpSplitPipe{
-		splitWith: ",",
+		SplitWith: ",",
 	}
 }
 
@@ -22,7 +27,7 @@ func (r *RegexpSplitPipe) GetName() string {
 }
 
 func (r *RegexpSplitPipe) GetTip() string {
-	return fmt.Sprintf("Split input string with regexp: %s", r.splitWith)
+	return fmt.Sprintf("Split input string with regexp: %s", r.SplitWith)
 }
 
 func (r *RegexpSplitPipe) GetInputType() DataType {
@@ -35,13 +40,13 @@ func (r *RegexpSplitPipe) GetOutputType() DataType {
 
 func (r *RegexpSplitPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Split with", 100, &(r.splitWith), 0, nil, changed),
+		g.InputTextV("Split with", 100, &(r.SplitWith), 0, nil, changed),
 	}
 }
 
 func (r *RegexpSplitPipe) Process(data interface{}) interface{} {
 	if str, ok := data.(string); ok {
-		re, err := regexp.Compile(r.splitWith)
+		re, err := regexp.Compile(r.SplitWith)
 		if err == nil {
 			return re.Split(str, -1)
 		} else {

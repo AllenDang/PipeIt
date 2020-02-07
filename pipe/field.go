@@ -1,12 +1,17 @@
 package pipe
 
 import (
+	"encoding/gob"
 	"strings"
 
 	g "github.com/AllenDang/giu"
 )
 
 type FieldsPipe struct{}
+
+func init() {
+	gob.Register(&FieldsPipe{})
+}
 
 func NewFieldsPipe() Pipe {
 	return &FieldsPipe{}

@@ -1,13 +1,18 @@
 package pipe
 
 import (
+	"encoding/gob"
 	"strings"
 
 	g "github.com/AllenDang/giu"
 )
 
 type TrimPipe struct {
-	trimWith string
+	TrimWith string
+}
+
+func init() {
+	gob.Register(&TrimPipe{})
 }
 
 func NewTrimPipe() Pipe {
@@ -32,7 +37,7 @@ func (t *TrimPipe) GetOutputType() DataType {
 
 func (t *TrimPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Trim with", 100, &(t.trimWith), 0, nil, changed),
+		g.InputTextV("Trim with", 100, &(t.TrimWith), 0, nil, changed),
 	}
 }
 
@@ -40,7 +45,7 @@ func (t *TrimPipe) Process(data interface{}) interface{} {
 	if strs, ok := data.([]string); ok {
 		var results []string
 		for _, s := range strs {
-			results = append(results, strings.Trim(s, t.trimWith))
+			results = append(results, strings.Trim(s, t.TrimWith))
 		}
 
 		return results

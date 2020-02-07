@@ -1,6 +1,7 @@
 package pipe
 
 import (
+	"encoding/gob"
 	"fmt"
 	"strings"
 
@@ -8,6 +9,10 @@ import (
 )
 
 type LinePipe struct{}
+
+func init() {
+	gob.Register(&LinePipe{})
+}
 
 func NewLinePipe() Pipe {
 	return &LinePipe{}

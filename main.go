@@ -4,9 +4,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/AllenDang/PipeIt/pipe"
 	g "github.com/AllenDang/giu"
+	"github.com/AllenDang/giu/imgui"
+)
+
+const (
+	saveDir string = "Save"
 )
 
 var (
@@ -19,6 +25,13 @@ var (
 	pipeHint string
 
 	pipeline pipe.Pipeline
+
+	savePipelineName string
+	savedPipelines   []string
+	selectedIndex    int32
+	comboPreview     string
+
+	msgboxStr string
 )
 
 func changed() {
@@ -125,6 +138,109 @@ func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
 	return g.Line(widgets...)
 }
 
+func msgbox(msg string) {
+	msgboxStr = msg
+	g.OpenPopup("Msgbox")
+}
+
+func btnLoadClicked() {
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	dir = filepath.Join(dir, saveDir)
+
+	f, err := os.Open(filepath.Join(dir, comboPreview))
+	if err != nil {
+		msgbox(fmt.Sprintf("Load pipeline failed, error message is %s", err.Error()))
+		return
+	}
+	defer f.Close()
+
+	pl, err := pipe.DecodePipeline(f)
+	if err != nil {
+		msgbox(fmt.Sprintf("Load pipeline failed, error message is %s", err.Error()))
+		return
+	}
+
+	pipeline = *pl
+	changed()
+}
+
+func btnSaveClicked() {
+	if len(pipeline) == 0 {
+		msgbox("Current pipeline is empty.")
+		return
+	}
+
+	g.OpenPopup("Save Pipeline")
+}
+
+func onSave() {
+	defer func() {
+		g.CloseCurrentPopup()
+		loadSavedPiplines()
+	}()
+
+	if len(savePipelineName) == 0 {
+		msgbox("Pipeline's name cannot be empty")
+		return
+	}
+
+	// Prepare save dir
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	dir = filepath.Join(dir, saveDir)
+
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err := os.Mkdir(dir, os.ModeDir)
+		if err != nil {
+			msgbox(fmt.Sprintf("Failed to create save directory, error message is %s", err.Error()))
+			return
+		}
+	}
+
+	saveFilepath := filepath.Join(dir, fmt.Sprintf("%s.pl", savePipelineName))
+
+	buf, err := pipe.EncodePipeline(pipeline)
+	if err != nil {
+		msgbox(fmt.Sprintf("Save pipeline failed, error message is %s", err.Error()))
+		return
+	}
+
+	err = ioutil.WriteFile(saveFilepath, buf.Bytes(), 0644)
+	if err != nil {
+		msgbox(fmt.Sprintf("Save pipeline failed, error message is %s", err.Error()))
+		return
+	}
+}
+
+func onCancel() {
+	g.CloseCurrentPopup()
+}
+
+func onComboChanged() {
+	comboPreview = savedPipelines[selectedIndex]
+}
+
+func loadSavedPiplines() {
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	dir = filepath.Join(dir, saveDir)
+
+	// Get all saved *.pl filenames.
+	var files []string
+	_ = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err == nil && !info.IsDir() && filepath.Ext(path) == ".pl" {
+			files = append(files, filepath.Base(path))
+		}
+		return nil
+	})
+
+	savedPipelines = files
+	if int(selectedIndex) > len(savedPipelines) {
+		selectedIndex = 0
+	}
+	if len(savedPipelines) > 0 {
+		comboPreview = savedPipelines[selectedIndex]
+	}
+}
+
 func loop() {
 	inputHeight += delta
 
@@ -132,11 +248,40 @@ func loop() {
 		g.Label("Input - input or paste text below"),
 		g.InputTextMultiline("##input", &input, -1, inputHeight, 0, nil, changed),
 		g.HSplitter("hsplitter", -1, 8, &delta),
-		g.Label(pipeHint),
+		g.Custom(func() {
+			g.AlignTextToFramePadding()
+		}),
+		g.Line(
+			g.Label(pipeHint),
+			g.Combo("##savedPipeines", comboPreview, savedPipelines, &selectedIndex, 200, 0, onComboChanged),
+			g.Button("Load", btnLoadClicked),
+			g.Button("Save", btnSaveClicked),
+		),
 		buildPipeLineWidgets(pipeline),
 		g.Dummy(0, 8),
 		g.Label("Output - output text which is processed by pipeline"),
 		g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
+		g.Custom(func() {
+			imgui.SetNextWindowSize(imgui.Vec2{X: 400, Y: 0})
+		}),
+		g.PopupV("Msgbox", nil, g.WindowFlagsNoResize, g.Layout{
+			g.Custom(func() {
+				g.PushTextWrapPos()
+				g.Label(msgboxStr).Build()
+				g.PopTextWrapPos()
+			}),
+			g.Button("OK", func() {
+				g.CloseCurrentPopup()
+			}),
+		}),
+		g.PopupV("Save Pipeline", nil, g.WindowFlagsNoResize, g.Layout{
+			g.Label("Enter the name of the pipeline "),
+			g.InputText("##pipelineName", 200, &savePipelineName),
+			g.Line(
+				g.Button("Save", onSave),
+				g.Button("Cancel", onCancel),
+			),
+		}),
 	})
 }
 
@@ -158,6 +303,9 @@ func main() {
 
 	// Try to read from stdin if there is anything.
 	readStdin()
+
+	// Load saved pipelines.
+	loadSavedPiplines()
 
 	wnd := g.NewMasterWindow("PipeIt", 1024, 768, true, nil)
 	wnd.Main(loop)

@@ -1,8 +1,16 @@
 package pipe
 
-import g "github.com/AllenDang/giu"
+import (
+	"encoding/gob"
+
+	g "github.com/AllenDang/giu"
+)
 
 type Column2RowPipe struct{}
+
+func init() {
+	gob.Register(&Column2RowPipe{})
+}
 
 func NewColumn2RowPipe() Pipe {
 	return &Column2RowPipe{}
