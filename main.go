@@ -19,9 +19,6 @@ var (
 	input  string
 	output string
 
-	inputHeight float32 = 300
-	delta       float32
-
 	pipeHint string
 
 	pipeline pipe.Pipeline
@@ -242,39 +239,35 @@ func loadSavedPiplines() {
 }
 
 func loop() {
-	inputHeight += delta
-
 	g.SingleWindow("pipeit", g.Layout{
-		g.Label("Input - input or paste text below"),
-		g.InputTextMultiline("##input", &input, -1, inputHeight, 0, nil, changed),
-		g.HSplitter("hsplitter", -1, 8, &delta),
-		g.Custom(func() {
-			g.AlignTextToFramePadding()
-		}),
-		g.Line(
-			g.Label(pipeHint),
-			g.Combo("##savedPipeines", comboPreview, savedPipelines, &selectedIndex, 200, 0, onComboChanged),
-			g.Button("Load", btnLoadClicked),
-			g.Button("Save", btnSaveClicked),
-		),
-		buildPipeLineWidgets(pipeline),
-		g.Dummy(0, 8),
-		g.Label("Output - output text which is processed by pipeline"),
-		g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
+		g.SplitLayout("Container", g.DirectionVertical, false, 300,
+			g.Layout{
+				g.Label("Input - input or paste text below"),
+				g.InputTextMultiline("##input", &input, -1, -1, 0, nil, changed),
+			},
+			g.Layout{
+				g.Dummy(0, 8),
+				g.Line(
+					g.Label(pipeHint),
+					g.Combo("##savedPipeines", comboPreview, savedPipelines, &selectedIndex, 200, 0, onComboChanged),
+					g.Button("Load", btnLoadClicked),
+					g.Button("Save", btnSaveClicked),
+				),
+				buildPipeLineWidgets(pipeline),
+				g.Dummy(0, 8),
+				g.Label("Output - output text which is processed by pipeline"),
+				g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
+			}),
 		g.Custom(func() {
 			imgui.SetNextWindowSize(imgui.Vec2{X: 400, Y: 0})
 		}),
-		g.PopupV("Msgbox", nil, g.WindowFlagsNoResize, g.Layout{
-			g.Custom(func() {
-				g.PushTextWrapPos()
-				g.Label(msgboxStr).Build()
-				g.PopTextWrapPos()
-			}),
+		g.PopupModalV("Msgbox", nil, g.WindowFlagsNoResize, g.Layout{
+			g.LabelWrapped(msgboxStr),
 			g.Button("OK", func() {
 				g.CloseCurrentPopup()
 			}),
 		}),
-		g.PopupV("Save Pipeline", nil, g.WindowFlagsNoResize, g.Layout{
+		g.PopupModalV("Save Pipeline", nil, g.WindowFlagsNoResize, g.Layout{
 			g.Label("Enter the name of the pipeline "),
 			g.InputText("##pipelineName", 200, &savePipelineName),
 			g.Line(
@@ -307,6 +300,6 @@ func main() {
 	// Load saved pipelines.
 	loadSavedPiplines()
 
-	wnd := g.NewMasterWindow("PipeIt", 1024, 768, true, nil)
+	wnd := g.NewMasterWindow("PipeIt", 1024, 768, 0, nil)
 	wnd.Main(loop)
 }

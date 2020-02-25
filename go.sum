@@ -21,6 +21,10 @@ github.com/AllenDang/giu v0.0.0-20200206130253-b42bcac335fc h1:ghpVBAYgd4EUICPtM
 github.com/AllenDang/giu v0.0.0-20200206130253-b42bcac335fc/go.mod h1:QGaUG2GBKtm7XfqOhc/Rglb8SnX1laISwfYXKGlMpoo=
 github.com/AllenDang/giu v0.0.0-20200219040418-330b2e0c645b h1:2YfKth37VdG2SJ+b33Wj/u0PzKiPDMxJWIQ4OR1Xmxc=
 github.com/AllenDang/giu v0.0.0-20200219040418-330b2e0c645b/go.mod h1:MljwDs2yG0bN4FIbdlaPij+/iXFQqlCL9ECTYDRN3UI=
+github.com/AllenDang/giu v0.0.0-20200224164327-7d08f44fda52 h1:9awTrlBf5dxQS4jEyt7f4/razGPTjUZZHiI7jnoBi00=
+github.com/AllenDang/giu v0.0.0-20200224164327-7d08f44fda52/go.mod h1:MljwDs2yG0bN4FIbdlaPij+/iXFQqlCL9ECTYDRN3UI=
+github.com/AllenDang/giu v0.0.0-20200225024007-457c18c88f7e h1:mpV+Z201DOo5x4F8NIngvs4aD2i/igW/BSet9zO0ep4=
+github.com/AllenDang/giu v0.0.0-20200225024007-457c18c88f7e/go.mod h1:MljwDs2yG0bN4FIbdlaPij+/iXFQqlCL9ECTYDRN3UI=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -28,6 +32,8 @@ github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7 h1:SCYMcCJ89LjRGwEa0tRluN
 github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7/go.mod h1:482civXOzJJCPzJ4ZOX/pwvXBWSnzD4OKMdH4ClKGbk=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72 h1:b+9H1GAsx5RsjvDFLoS5zkNBzIQMuVKUYQDmxU3N5XE=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
+github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4 h1:WtGNWLvXpe6ZudgnXrq0barxBImvnnJoMEhXAzcbM0I=
+github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-resty/resty/v2 v2.1.0 h1:Z6IefCpUMfnvItVJaJXWv/pMiiD11So35QgwEELsldE=
 github.com/go-resty/resty/v2 v2.1.0/go.mod h1:dZGr0i9PLlaaTD4H/hoZIDjQ+r6xq8mgbRzHZf7f2J8=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
