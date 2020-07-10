@@ -3,7 +3,7 @@ package pipe
 import (
 	"encoding/gob"
 	"fmt"
-	"strings"
+	"regexp"
 
 	g "github.com/AllenDang/giu"
 )
@@ -46,9 +46,14 @@ func (r *ReplacePipe) GetConfigUI(changed func()) g.Layout {
 
 func (r *ReplacePipe) Process(data interface{}) interface{} {
 	if strs, ok := data.([]string); ok {
+		re, err := regexp.Compile(r.Replace)
+		if err != nil {
+			return []string{"Error: Invalid regex"}
+		}
+
 		var result []string
 		for _, s := range strs {
-			result = append(result, strings.ReplaceAll(s, r.Replace, r.With))
+			result = append(result, re.ReplaceAllString(s, r.With))
 		}
 
 		return result
