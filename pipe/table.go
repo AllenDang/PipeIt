@@ -41,8 +41,8 @@ func (t *TablePipe) GetOutputType() DataType {
 
 func (t *TablePipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Split row with", 100, &(t.SplitRowWith), 0, nil, changed),
-		g.InputTextV("Split column with", 100, &(t.SplitColumnWith), 0, nil, changed),
+		g.InputText(&(t.SplitRowWith)).Label("Split row with").Size(100).OnChange(changed),
+		g.InputText(&(t.SplitColumnWith)).Label("Split column with").Size(100).OnChange(changed),
 	}
 }
 

@@ -40,7 +40,7 @@ func (r *RegexpSplitPipe) GetOutputType() DataType {
 
 func (r *RegexpSplitPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Split with", 100, &(r.SplitWith), 0, nil, changed),
+		g.InputText(&(r.SplitWith)).Label("Split").Size(100).OnChange(changed),
 	}
 }
 

@@ -40,7 +40,7 @@ func (f *FmtRowPipe) GetOutputType() DataType {
 
 func (f *FmtRowPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Fmt string", 300, &(f.FmtStr), 0, nil, changed),
+		g.InputText(&(f.FmtStr)).Label("Format string").Size(300).OnChange(changed),
 	}
 }
 

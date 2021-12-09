@@ -43,8 +43,8 @@ func (p *SurroundPipe) GetOutputType() DataType {
 func (p *SurroundPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
 		g.Label("Use %d to generate series number"),
-		g.InputTextV("Prefix", 100, &(p.Prefix), 0, nil, changed),
-		g.InputTextV("Suffix", 100, &(p.Suffix), 0, nil, changed),
+		g.InputText(&(p.Prefix)).Label("Prefix").Size(100).OnChange(changed),
+		g.InputText(&(p.Suffix)).Label("Suffix").Size(100).OnChange(changed),
 	}
 }
 

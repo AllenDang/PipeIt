@@ -39,8 +39,8 @@ func (r *ReplacePipe) GetOutputType() DataType {
 
 func (r *ReplacePipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Replace", 100, &(r.Replace), 0, nil, changed),
-		g.InputTextV("With", 100, &(r.With), 0, nil, changed),
+		g.InputText(&(r.Replace)).Label("Replace").Size(100).OnChange(changed),
+		g.InputText(&(r.With)).Label("With").Size(100).OnChange(changed),
 	}
 }
 

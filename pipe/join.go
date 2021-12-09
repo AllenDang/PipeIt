@@ -40,7 +40,7 @@ func (j *JoinPipe) GetOutputType() DataType {
 
 func (j *JoinPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Join With", 100, &(j.JoinWith), 0, nil, changed),
+		g.InputText(&(j.JoinWith)).Label("Join With").Size(100).OnChange(changed),
 	}
 }
 

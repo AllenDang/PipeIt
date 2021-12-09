@@ -37,7 +37,7 @@ func (t *TrimPipe) GetOutputType() DataType {
 
 func (t *TrimPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Trim with", 100, &(t.TrimWith), 0, nil, changed),
+		g.InputText(&(t.TrimWith)).Label("Trim with").Size(100).OnChange(changed),
 	}
 }
 

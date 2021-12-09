@@ -38,7 +38,7 @@ func (m *MatchPipe) GetOutputType() DataType {
 
 func (m *MatchPipe) GetConfigUI(changed func()) g.Layout {
 	return g.Layout{
-		g.InputTextV("Match with", 100, &(m.MatchWith), 0, nil, changed),
+		g.InputText(&(m.MatchWith)).Label("Match with").Size(100).OnChange(changed),
 	}
 }
 

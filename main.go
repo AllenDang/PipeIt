@@ -8,7 +8,6 @@ import (
 
 	"github.com/AllenDang/PipeIt/pipe"
 	g "github.com/AllenDang/giu"
-	"github.com/AllenDang/giu/imgui"
 )
 
 const (
@@ -61,7 +60,7 @@ func buildConfigMenu(index int, configUI g.Layout) g.Layout {
 	var addBeforeMenuItems g.Layout
 	for i, p := range betweenPipes {
 		builder := p.Builder
-		addBeforeMenuItems = append(addBeforeMenuItems, g.Selectable(fmt.Sprintf("%s##%d-%d", p.Name, index, i), func() {
+		addBeforeMenuItems = append(addBeforeMenuItems, g.Selectable(fmt.Sprintf("%s##%d-%d", p.Name, index, i)).OnClick(func() {
 			pipeline = append(pipeline[:index], append(pipe.Pipeline{builder()}, pipeline[index:]...)...)
 			changed()
 		}))
@@ -70,20 +69,20 @@ func buildConfigMenu(index int, configUI g.Layout) g.Layout {
 
 	var addBeforeMenu g.Layout
 	if len(addBeforeMenuItems) > 0 {
-		addBeforeMenu = append(addBeforeMenu, g.Menu(fmt.Sprintf("Add before##%d", index), addBeforeMenuItems))
+		addBeforeMenu = append(addBeforeMenu, g.Menu(fmt.Sprintf("Add before##%d", index)).Layout(addBeforeMenuItems))
 	} else {
-		addBeforeMenu = append(addBeforeMenu, g.Menu(fmt.Sprintf("Add before##%d", index), g.Layout{g.Label("No suitable pipe")}))
+		addBeforeMenu = append(addBeforeMenu, g.Menu(fmt.Sprintf("Add before##%d", index)).Layout(g.Layout{g.Label("No suitable pipe")}))
 	}
 
 	return g.Layout{
 		g.Custom(func() {
 			if configUI != nil {
-				g.ContextMenuV(fmt.Sprintf("%s##%d", "configMenu", index), 0, configUI).Build()
+				g.ContextMenu().ID(fmt.Sprintf("%s##%d", "configMenu", index)).MouseButton(g.MouseButtonLeft).Layout(configUI).Build()
 			}
 		}),
-		g.ContextMenuV(fmt.Sprintf("%s##%d", "opMenu", index), 1, g.Layout{
+		g.ContextMenu().ID(fmt.Sprintf("%s##%d", "opMenu", index)).MouseButton(g.MouseButtonRight).Layout(g.Layout{
 			addBeforeMenu,
-			g.Selectable("Delete", func() {
+			g.Selectable("Delete").OnClick(func() {
 				pipeline = append(pipeline[:index], pipeline[index+1:]...)
 				changed()
 			}),
@@ -105,7 +104,7 @@ func buildPipesMenu() g.Widget {
 		for i, pb := range pipBuilders {
 			builder := pb.Builder
 			widgets = append(widgets,
-				g.Selectable(fmt.Sprintf("%s##%d", pb.Name, i), func() {
+				g.Selectable(fmt.Sprintf("%s##%d", pb.Name, i)).OnClick(func() {
 					pipeline = append(pipeline, builder())
 					changed()
 				}),
@@ -114,7 +113,7 @@ func buildPipesMenu() g.Widget {
 		}
 	}
 
-	return g.ContextMenuV("AvailabePipes", 0, widgets)
+	return g.ContextMenu().ID("AvailabePipes").MouseButton(g.MouseButtonLeft).Layout(widgets...)
 }
 
 func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
@@ -123,16 +122,16 @@ func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
 		for i, p := range pipes {
 			configUI := p.GetConfigUI(func() { changed() })
 			widgets = append(widgets,
-				g.Button(fmt.Sprintf(" %s ##%d", p.GetName(), i), func() {}),
+				g.Button(fmt.Sprintf(" %s ##%d", p.GetName(), i)),
 				g.Tooltip(p.GetTip()),
 				buildConfigMenu(i, configUI),
 				g.Label("->"))
 		}
 	}
 
-	widgets = append(widgets, g.Button(" + ", nil), buildPipesMenu())
+	widgets = append(widgets, g.Button(" + "), buildPipesMenu())
 
-	return g.Line(widgets...)
+	return g.Row(widgets...)
 }
 
 func msgbox(msg string) {
@@ -239,40 +238,40 @@ func loadSavedPiplines() {
 }
 
 func loop() {
-	g.SingleWindow("pipeit", g.Layout{
-		g.SplitLayout("Container", g.DirectionVertical, false, 300,
+	g.SingleWindow().Layout(g.Layout{
+		g.SplitLayout(g.DirectionVertical, 300,
 			g.Layout{
 				g.Label("Input - input or paste text below"),
-				g.InputTextMultiline("##input", &input, -1, -1, 0, nil, changed),
+				g.InputTextMultiline(&input).Size(-1, -1).OnChange(changed),
 			},
 			g.Layout{
 				g.Dummy(0, 8),
-				g.Line(
+				g.Row(
 					g.Label(pipeHint),
-					g.Combo("##savedPipeines", comboPreview, savedPipelines, &selectedIndex, 200, 0, onComboChanged),
-					g.Button("Load", btnLoadClicked),
-					g.Button("Save", btnSaveClicked),
+					g.Combo("##savedPipeines", comboPreview, savedPipelines, &selectedIndex).Size(200).OnChange(onComboChanged),
+					g.Button("Load").OnClick(btnLoadClicked),
+					g.Button("Save").OnClick(btnSaveClicked),
 				),
 				buildPipeLineWidgets(pipeline),
 				g.Dummy(0, 8),
 				g.Label("Output - output text which is processed by pipeline"),
-				g.InputTextMultiline("##output", &output, -1, -1, g.InputTextFlagsReadOnly, nil, nil),
-			}),
+				g.InputTextMultiline(&output).Size(-1, -1).Flags(g.InputTextFlagsReadOnly),
+			}).Border(false),
 		g.Custom(func() {
-			imgui.SetNextWindowSize(imgui.Vec2{X: 400, Y: 0})
+			g.SetNextWindowSize(400, 0)
 		}),
-		g.PopupModalV("Msgbox", nil, g.WindowFlagsNoResize, g.Layout{
-			g.LabelWrapped(msgboxStr),
-			g.Button("OK", func() {
+		g.PopupModal("Msgbox").Flags(g.WindowFlagsNoResize).Layout(g.Layout{
+			g.Label(msgboxStr).Wrapped(true),
+			g.Button("OK").OnClick(func() {
 				g.CloseCurrentPopup()
 			}),
 		}),
-		g.PopupModalV("Save Pipeline", nil, g.WindowFlagsNoResize, g.Layout{
+		g.PopupModal("Save Pipeline").Flags(g.WindowFlagsNoResize).Layout(g.Layout{
 			g.Label("Enter the name of the pipeline "),
-			g.InputText("##pipelineName", 200, &savePipelineName),
-			g.Line(
-				g.Button("Save", onSave),
-				g.Button("Cancel", onCancel),
+			g.InputText(&savePipelineName).Size(200),
+			g.Row(
+				g.Button("Save").OnClick(onSave),
+				g.Button("Cancel").OnClick(onCancel),
 			),
 		}),
 	})
@@ -300,6 +299,6 @@ func main() {
 	// Load saved pipelines.
 	loadSavedPiplines()
 
-	wnd := g.NewMasterWindow("PipeIt", 1024, 768, 0, nil)
-	wnd.Main(loop)
+	wnd := g.NewMasterWindow("PipeIt", 1024, 768, 0)
+	wnd.Run(loop)
 }
