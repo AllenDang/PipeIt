@@ -26,8 +26,6 @@ var (
 	savedPipelines   []string
 	selectedIndex    int32
 	comboPreview     string
-
-	msgboxStr string
 )
 
 func changed() {
@@ -134,25 +132,20 @@ func buildPipeLineWidgets(pipes pipe.Pipeline) g.Widget {
 	return g.Row(widgets...)
 }
 
-func msgbox(msg string) {
-	msgboxStr = msg
-	g.OpenPopup("Msgbox")
-}
-
 func btnLoadClicked() {
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	dir = filepath.Join(dir, saveDir)
 
 	f, err := os.Open(filepath.Join(dir, comboPreview))
 	if err != nil {
-		msgbox(fmt.Sprintf("Load pipeline failed, error message is %s", err.Error()))
+		g.Msgbox("Error", fmt.Sprintf("Load pipeline failed, error message is %s", err.Error()))
 		return
 	}
 	defer f.Close()
 
 	pl, err := pipe.DecodePipeline(f)
 	if err != nil {
-		msgbox(fmt.Sprintf("Load pipeline failed, error message is %s", err.Error()))
+		g.Msgbox("Error", fmt.Sprintf("Load pipeline failed, error message is %s", err.Error()))
 		return
 	}
 
@@ -162,7 +155,7 @@ func btnLoadClicked() {
 
 func btnSaveClicked() {
 	if len(pipeline) == 0 {
-		msgbox("Current pipeline is empty.")
+		g.Msgbox("Error", "Current pipeline is empty.")
 		return
 	}
 
@@ -176,7 +169,7 @@ func onSave() {
 	}()
 
 	if len(savePipelineName) == 0 {
-		msgbox("Pipeline's name cannot be empty")
+		g.Msgbox("Error", "Pipeline's name cannot be empty")
 		return
 	}
 
@@ -187,7 +180,7 @@ func onSave() {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		err := os.Mkdir(dir, os.ModeDir)
 		if err != nil {
-			msgbox(fmt.Sprintf("Failed to create save directory, error message is %s", err.Error()))
+			g.Msgbox("Error", fmt.Sprintf("Failed to create save directory, error message is %s", err.Error()))
 			return
 		}
 	}
@@ -196,13 +189,13 @@ func onSave() {
 
 	buf, err := pipe.EncodePipeline(pipeline)
 	if err != nil {
-		msgbox(fmt.Sprintf("Save pipeline failed, error message is %s", err.Error()))
+		g.Msgbox("Error", fmt.Sprintf("Save pipeline failed, error message is %s", err.Error()))
 		return
 	}
 
 	err = ioutil.WriteFile(saveFilepath, buf.Bytes(), 0644)
 	if err != nil {
-		msgbox(fmt.Sprintf("Save pipeline failed, error message is %s", err.Error()))
+		g.Msgbox("Error", fmt.Sprintf("Save pipeline failed, error message is %s", err.Error()))
 		return
 	}
 }
@@ -252,28 +245,20 @@ func loop() {
 					g.Button("Load").OnClick(btnLoadClicked),
 					g.Button("Save").OnClick(btnSaveClicked),
 				),
+				g.PopupModal("Save Pipeline").Flags(g.WindowFlagsNoResize).Layout(g.Layout{
+					g.Label("Enter the name of the pipeline "),
+					g.InputText(&savePipelineName).Size(200),
+					g.Row(
+						g.Button("Save").OnClick(onSave),
+						g.Button("Cancel").OnClick(onCancel),
+					),
+				}),
 				buildPipeLineWidgets(pipeline),
 				g.Dummy(0, 8),
 				g.Label("Output - output text which is processed by pipeline"),
 				g.InputTextMultiline(&output).Size(-1, -1).Flags(g.InputTextFlagsReadOnly),
 			}).Border(false),
-		g.Custom(func() {
-			g.SetNextWindowSize(400, 0)
-		}),
-		g.PopupModal("Msgbox").Flags(g.WindowFlagsNoResize).Layout(g.Layout{
-			g.Label(msgboxStr).Wrapped(true),
-			g.Button("OK").OnClick(func() {
-				g.CloseCurrentPopup()
-			}),
-		}),
-		g.PopupModal("Save Pipeline").Flags(g.WindowFlagsNoResize).Layout(g.Layout{
-			g.Label("Enter the name of the pipeline "),
-			g.InputText(&savePipelineName).Size(200),
-			g.Row(
-				g.Button("Save").OnClick(onSave),
-				g.Button("Cancel").OnClick(onCancel),
-			),
-		}),
+		g.PrepareMsgbox(),
 	})
 }
 
